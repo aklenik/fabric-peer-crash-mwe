@@ -1,0 +1,18 @@
+General:
+  ListenAddress: 0.0.0.0
+  GenesisMethod: file
+  GenesisFile: /etc/hyperledger/config/genesis.block
+  LocalMSPDir: /etc/hyperledger/msp/orderer/msp
+  LocalMSPID: OrdererMSP
+
+  TLS:
+    Enabled: true
+    PrivateKey: /etc/hyperledger/msp/orderer/tls/server.key
+    Certificate: /etc/hyperledger/msp/orderer/tls/server.crt
+    RootCAs:
+      - /etc/hyperledger/msp/orderer/tls/ca.crt
+
+  Cluster:
+    SendBufferSize: 100
+    ClientCertificate: /etc/hyperledger/msp/orderer/tls/server.crt
+    ClientPrivateKey: /etc/hyperledger/msp/orderer/tls/server.key

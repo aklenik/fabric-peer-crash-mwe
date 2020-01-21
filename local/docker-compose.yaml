@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+    orderer0:
+        container_name: orderer0
+        image: hyperledger/fabric-orderer:1.4.4
+        environment:
+        - FABRIC_LOGGING_SPEC=debug
+        working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+        command: orderer
+        ports:
+        - 7050:7050
+        volumes:
+        - ./configs/:/etc/hyperledger/config
+        - ./configs/orderer.yaml:/etc/hyperledger/fabric/orderer.yaml
+        - ./configs/crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/:/etc/hyperledger/msp/orderer
+        - ./configs/crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/msp/caOrg1
+        - ./configs/crypto-config/ordererOrganizations/example.com/ca/:/etc/hyperledger/msp/caOrderer
+
+    peer0org1:
+        container_name: peer0org1
+        image: hyperledger/fabric-peer:1.4.4
+        environment:
+        - FABRIC_LOGGING_SPEC=debug
+        working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+        command: peer node start
+        ports:
+        - 7051:7051
+        volumes:
+        - /var/run/:/host/var/run/
+        - ./configs/core.yaml:/etc/hyperledger/fabric/core.yaml
+        - ./configs/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/:/etc/hyperledger/msp/peer
+        - ./configs/crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/msp/caOrg1
+        - ./configs/crypto-config/ordererOrganizations/example.com/ca/:/etc/hyperledger/msp/caOrderer
+        depends_on:
+        - orderer0
+
+    fabric-cli:
+        container_name: fabric-cli
+        image: hyperledger/fabric-tools:1.4.4
+        command: /bin/bash /etc/fabric-config/create-join-channel.sh
+        volumes:
+        - ./configs/:/etc/fabric-config
+        depends_on:
+        - peer0org1

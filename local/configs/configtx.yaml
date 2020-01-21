@@ -1,0 +1,56 @@
+Organizations:
+- &OrdererOrg
+    Name: OrdererMSP
+    ID: OrdererMSP
+    MSPDir: crypto-config/ordererOrganizations/example.com/msp
+    AdminPrincipal: Role.MEMBER
+
+- &Org1
+    Name: Org1MSP
+    ID: Org1MSP
+    MSPDir: crypto-config/peerOrganizations/org1.example.com/msp
+    AdminPrincipal: Role.ADMIN
+    AnchorPeers:
+    - Host: peer0org1
+      Port: 7051
+
+Orderer: &OrdererDefaults
+    OrdererType: etcdraft
+    Addresses:
+    - orderer0:7050
+
+    BatchTimeout: 500ms
+    BatchSize:
+        MaxMessageCount: 50
+        AbsoluteMaxBytes: 1 MB
+        PreferredMaxBytes: 1 MB
+
+    MaxChannels: 0
+    EtcdRaft:
+        Consenters:
+        - Host: orderer0
+          Port: 7050
+          ClientTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/tls/server.crt
+          ServerTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/tls/server.crt
+
+    Organizations:
+
+Application: &ApplicationDefaults
+    Organizations:
+
+Profiles:
+    OrdererGenesis:
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+            - *OrdererOrg
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                - *Org1
+    ChannelConfig:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+            - *Org1

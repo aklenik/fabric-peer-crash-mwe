@@ -1,0 +1,9 @@
+# binaries
+bin/**
+
+# generated files
+crypto-config/**
+config/**
+genesis.block
+mychannel.tx
+org1update.tx

@@ -1,0 +1,26 @@
+peer:
+  id: peer0.org1.example.com
+  localMspId: Org1MSP
+  mspConfigPath: /etc/hyperledger/msp/peer/msp/
+  listenAddress: 0.0.0.0:7051
+  address: peer0org1:7051
+  addressAutoDetect: true
+
+  tls:
+    enabled: true
+    cert:
+      file: /etc/hyperledger/msp/peer/tls/server.crt
+    key:
+      file: /etc/hyperledger/msp/peer/tls/server.key
+    rootcert:
+      file: /etc/hyperledger/msp/peer/tls/ca.crt
+
+vm:
+  endpoint: unix:///host/var/run/docker.sock
+  docker:
+    hostConfig:
+      NetworkMode: local_default
+
+ledger:
+  state:
+    stateDatabase: goleveldb
